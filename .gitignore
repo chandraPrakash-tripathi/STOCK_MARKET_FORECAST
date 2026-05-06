@@ -1,0 +1,43 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env/
+.venv/
+
+# Environment variables
+.env
+.env.*
+
+# Docs (optional - ignore if auto-generated)
+docs/
+
+# Tests (optional - ignore if not needed in repo)
+tests/
+
+# Markdown notes (optional)
+code.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Docker
+docker-compose.yml
+
+# IDEs
+.vscode/
+.idea/
+
+# Misc
+*.sqlite3
+*.db
+
+check.py
+__init__.py

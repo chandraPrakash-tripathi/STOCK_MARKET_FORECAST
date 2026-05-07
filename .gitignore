@@ -14,6 +14,8 @@ venv/
 
 # Docs (optional - ignore if auto-generated)
 docs/
+data/
+bhavcopy/
 
 # Tests (optional - ignore if not needed in repo)
 tests/
@@ -41,3 +43,5 @@ docker-compose.yml
 
 check.py
 __init__.py
+
+help.txt

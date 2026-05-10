@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: stg_                
+    database: stock_forecast                
+    schema: raw             
+    description: "Raw data from stock market database"
+    tables:
+      - name: kaggle_nifty50               
+        description: "Raw data"
+      - name: news_articles
+        description: "News data"

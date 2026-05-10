@@ -47,47 +47,6 @@ def init_db():
                 logger.error("Schema verification failed")
                 return
 
-            # OHLCV Historical
-            create_table(
-                db,
-                """
-                CREATE TABLE IF NOT EXISTS raw.ohlcv_historical (
-                    id BIGSERIAL PRIMARY KEY,
-                    ticker VARCHAR(20) NOT NULL,
-                    date DATE NOT NULL,
-                    open DOUBLE PRECISION,
-                    high DOUBLE PRECISION,
-                    low DOUBLE PRECISION,
-                    close DOUBLE PRECISION,
-                    volume BIGINT,
-                    adj_close DOUBLE PRECISION,
-                    ingested_at TIMESTAMP DEFAULT NOW(),
-                    UNIQUE(ticker, date)
-                );
-            """,
-                "ohlcv_historical",
-            )
-
-            # OHLCV Live
-            create_table(
-                db,
-                """
-                CREATE TABLE IF NOT EXISTS raw.ohlcv_live (
-                    id BIGSERIAL PRIMARY KEY,
-                    ticker VARCHAR(20) NOT NULL,
-                    timestamp TIMESTAMP NOT NULL,
-                    open DOUBLE PRECISION,
-                    high DOUBLE PRECISION,
-                    low DOUBLE PRECISION,
-                    close DOUBLE PRECISION,
-                    volume BIGINT,
-                    ingested_at TIMESTAMP DEFAULT NOW(),
-                    UNIQUE(ticker, timestamp)
-                );
-            """,
-                "ohlcv_live",
-            )
-
             # News Articles
             create_table(
                 db,
@@ -106,21 +65,31 @@ def init_db():
                 "news_articles",
             )
 
-            # News Enriched
+            # kaggle
             create_table(
                 db,
                 """
-                CREATE TABLE IF NOT EXISTS raw.news_enriched (
-                    id BIGSERIAL PRIMARY KEY,
-                    article_id BIGINT REFERENCES raw.news_articles(id),
-                    ticker VARCHAR(20),
-                    sentiment_score DOUBLE PRECISION,
-                    sentiment_label VARCHAR(10),
-                    summary TEXT,
-                    processed_at TIMESTAMP DEFAULT NOW()
+                CREATE TABLE IF NOT EXISTS raw.kaggle_nifty50 (
+                    id              BIGSERIAL PRIMARY KEY,
+                    symbol          VARCHAR(30)    NOT NULL,
+                    series          VARCHAR(10),
+                    trade_date      DATE           NOT NULL,
+                    prev_close      NUMERIC(12, 4),
+                    open            NUMERIC(12, 4),
+                    high            NUMERIC(12, 4),
+                    low             NUMERIC(12, 4),
+                    close           NUMERIC(12, 4) NOT NULL,
+                    vwap            NUMERIC(12, 4),
+                    volume          BIGINT,
+                    turnover        NUMERIC(20, 4),
+                    trades          BIGINT,
+                    deliverable_vol BIGINT,
+                    pct_deliverable NUMERIC(8, 4),
+                    ingested_at     TIMESTAMP DEFAULT NOW(),
+                    UNIQUE (symbol, trade_date)
                 );
-            """,
-                "news_enriched",
+                """,
+                "kaggle_nifty50",
             )
 
             logger.info("Database setup completed successfully")

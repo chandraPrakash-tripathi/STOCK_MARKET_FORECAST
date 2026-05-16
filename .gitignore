@@ -44,5 +44,6 @@ docker-compose.yml
 
 check.py
 __init__.py
-
+nifty50_lstm_training.ipynb
 help.txt
+nifty50_lstm_models/

@@ -91,6 +91,24 @@ def init_db():
                 """,
                 "kaggle_nifty50",
             )
+            create_table(
+                db,
+                """
+                CREATE TABLE IF NOT EXISTS raw.ohlcv_live (
+                    id          BIGSERIAL PRIMARY KEY,
+                    ticker      VARCHAR(30)    NOT NULL,          -- NSE ticker with .NS suffix
+                    timestamp   TIMESTAMPTZ    NOT NULL,          -- bar open time, IST-aware
+                    open        NUMERIC(12, 4),
+                    high        NUMERIC(12, 4),
+                    low         NUMERIC(12, 4),
+                    close       NUMERIC(12, 4) NOT NULL,
+                    volume      BIGINT,
+                    ingested_at TIMESTAMPTZ    DEFAULT NOW(),
+                    UNIQUE (ticker, timestamp)                    -- upsert key
+                );
+                """,
+                "ohlcv_live",
+            )
 
             logger.info("Database setup completed successfully")
 

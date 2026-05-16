@@ -1,0 +1,105 @@
+version: 2
+
+sources:
+  - name: raw                
+    schema: raw             
+    description: "Raw data from stock market database"
+    tables:
+      - name: kaggle_nifty50               
+        description: "Raw data"
+        columns:
+          - name: id
+            description: "Surrogate PK (bigserial)"
+          - name: symbol
+            description: "NSE ticker symbol e.g. RELIANCE"
+          - name: series
+            description: "Market series — always EQ for equities"
+          - name: trade_date
+            description: "Date of trade (NSE calendar)"
+          - name: prev_close
+            description: "Previous session closing price"
+          - name: open
+            description: "Opening price"
+          - name: high
+            description: "Intraday high"
+          - name: low
+            description: "Intraday low"
+          - name: close
+            description: "Closing price — primary prediction target"
+          - name: vwap
+            description: "Volume-weighted average price"
+          - name: volume
+            description: "Total shares traded"
+          - name: turnover
+            description: "Total turnover in INR paisa (raw Kaggle unit)"
+          - name: trades
+            description: "Number of trades executed"
+          - name: deliverable_vol
+            description: "Delivery volume (long-term holding signal)"
+          - name: pct_deliverable
+            description: "Delivery volume as fraction of total volume"
+          - name: ingested_at
+            description: "Pipeline ingestion timestamp"
+      - name: news_articles
+        description: "News data"
+        columns:
+          - name: id
+            description: "Surrogate PK (bigserial)"
+          - name: source
+            description: "Publisher name e.g. Economic Times"
+          - name: title
+            description: "Article headline"
+          - name: description
+            description: "Article lede / summary"
+          - name: url
+            description: "Canonical article URL (unique)"
+          - name: published_at
+            description: "Publication timestamp from NewsAPI"
+          - name: raw_text
+            description: "Full article body if fetched"
+          - name: ingested_at
+            description: "Pipeline ingestion timestamp"
+      # Stub — populated by yfinance DAG later
+      - name: yfinance_ohlcv
+        description: "Live 15-min intraday OHLCV from yfinance (added in Phase 2)"
+        columns:
+          - name: symbol
+            description: "NSE ticker with .NS suffix"
+          - name: interval
+            description: "Bar interval e.g. 15m"
+          - name: bar_timestamp
+            description: "Bar open timestamp (IST)"
+          - name: open
+            description: "Bar open price"
+          - name: high
+            description: "Bar high"
+          - name: low
+            description: "Bar low"
+          - name: close
+            description: "Bar close"
+          - name: volume
+            description: "Bar volume"
+          - name: ingested_at
+            description: "Ingestion timestamp"
+
+      - name: ohlcv_live
+        description: "5-min OHLCV bars from yfinance — NSE market hours only"
+        columns:
+          - name: id
+            description: "Surrogate PK"
+          - name: ticker
+            description: "NSE ticker with .NS suffix e.g. ADANIPORTS.NS"
+          - name: timestamp
+            description: "Bar open time, stored as UTC timestamptz"
+          - name: open
+            description: "Bar open price"
+          - name: high
+            description: "Bar high"
+          - name: low
+            description: "Bar low"
+          - name: close
+            description: "Bar close price"
+          - name: volume
+            description: "Bar volume — 0 on opening auction bar, filtered in staging"
+          - name: ingested_at
+            description: "Ingestion timestamp"

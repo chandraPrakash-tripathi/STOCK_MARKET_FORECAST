@@ -1,0 +1,84 @@
+# models/schema.yml
+version: 2
+
+models:
+
+  - name: stg_kaggle_nifty50
+    description: "Cleaned and cast Nifty 50 historical OHLCV"
+    columns:
+      - name: symbol
+        tests: [not_null]
+      - name: trade_date
+        tests: [not_null]
+      - name: close_price
+        tests: [not_null]
+      - name: volume
+        tests: [not_null]
+
+  - name: stg_news_articles
+    description: "Cleaned NewsAPI headlines with combined sentiment_text"
+    columns:
+      - name: article_id
+        tests: [not_null, unique]
+      - name: published_at
+        tests: [not_null]
+
+  - name: int_price_features
+    description: "Daily OHLCV + returns. No future data in any column."
+    columns:
+      - name: symbol
+        tests: [not_null]
+      - name: trade_date
+        tests: [not_null]
+
+  - name: int_technical_indicators
+    description: "RSI-14, MACD, EMA-20/50/200, Bollinger Bands"
+
+  - name: int_news_sentiment
+    description: "Daily news count and sentiment aggregated per symbol"
+
+  - name: int_combined_signals
+    description: "Full feature join. next_close present only for label generation."
+
+  - name: mart_lstm_training
+    description: "LSTM training matrix with target_close. No leakage."
+    columns:
+      - name: target_close
+        tests: [not_null]
+      - name: split
+        tests:
+          - accepted_values:
+              values: ['train', 'val', 'test']
+
+  - name: mart_trend_training
+    description: "Direction classifier training data with UP/DOWN/NEUTRAL labels"
+    columns:
+      - name: direction_1d
+        tests:
+          - accepted_values:
+              values: ['UP', 'DOWN', 'NEUTRAL']
+
+  - name: mart_live_prediction
+    description: "Today's feature row per symbol for inference"
+
+  - name: mart_news_sentiment
+    description: "Sentiment feed for LangGraph News Agent"
+
+  - name: int_price_source
+    description: >
+      Unified daily price table. Kaggle historical rows back-filled from 2007,
+      yfinance rows for today and recent sessions. yfinance wins on conflict.
+    columns:
+      - name: symbol
+        tests: [not_null]
+      - name: trade_date
+        tests: [not_null]
+      - name: close_price
+        tests: [not_null]
+      - name: price_source
+        tests:
+          - accepted_values:
+              values: ['kaggle', 'yfinance']
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: ['symbol', 'trade_date']
